@@ -15,8 +15,14 @@ class codeEditor:
         self.Code_Var.set(self.codeScrolledText.get("1.0", tk.END))
 
     def startCodeEditor(self):
-        self.getScrolledText().config(state=tk.NORMAL)
+        self.codeScrolledText.config(state=tk.NORMAL)
         self.screen.mainloop()
+
+    def deleteAllText(self):
+        self.codeScrolledText.delete("1.0",tk.END)
+
+    def insertNewCode(self,newCode):
+        self.codeScrolledText.insert(tk.INSERT,newCode)
 
     def getCodeVarInEditorObj(self):
         return self.Code_Var

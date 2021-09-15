@@ -30,9 +30,8 @@ class client:
                     if message[0]!=self.username:
                         message=message[1]
                         self.mainCodeInTextEditor=str(message)
-                        self.clientEditor.getScrolledText().delete("1.0",tk.END)
-                        self.clientEditor.getScrolledText().insert(tk.INSERT,self.mainCodeInTextEditor)
-                        print(self.mainCodeInTextEditor)
+                        self.clientEditor.deleteAllText()
+                        self.clientEditor.insertNewCode(self.mainCodeInTextEditor)
             except:
                 print("\nAn error occured!...\n")
                 self.client.close()
