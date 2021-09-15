@@ -1,7 +1,6 @@
 import socket
 import threading
 from editor import codeEditor
-import tkinter as tk
 
 class client:
     def __init__(self,serverIP,serverPort):
