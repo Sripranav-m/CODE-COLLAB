@@ -23,7 +23,7 @@ class server:
                 message=client.recv(1024).decode()
                 message=str(message)
                 index = self.clients.index(client)
-                message=self.usernames[index]+"="+message
+                message=self.usernames[index]+" "+message
                 self.broadcast(message)
             except:
                 index = self.clients.index(client)
@@ -42,7 +42,7 @@ class server:
             self.usernames.append(username)
             self.clients.append(client)
             print("Username of the client is: "+str(username)+"\n\n\n")
-            client.send("\n\nConnected to the server...\n\n".encode("ascii"))
+            client.send((str(username)+" Connected to the server...\n\n").encode("ascii"))
 
             thread=threading.Thread(target=self.handle,args=(client,))
             thread.start()

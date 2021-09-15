@@ -7,6 +7,7 @@ class codeEditor:
         self.screen.geometry("500x500")
         self.Code_Var = tk.StringVar()
         self.codeScrolledText = ScrolledText(self.screen)
+        
         self.codeScrolledText.pack()
         self.codeScrolledText.bind('<KeyRelease>', self.get_stringvar)
 
@@ -14,6 +15,7 @@ class codeEditor:
         self.Code_Var.set(self.codeScrolledText.get("1.0", tk.END))
 
     def startCodeEditor(self):
+        self.getScrolledText().config(state=tk.NORMAL)
         self.screen.mainloop()
 
     def getCodeVarInEditorObj(self):

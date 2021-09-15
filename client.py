@@ -26,14 +26,15 @@ class client:
                     self.client.send(self.username.encode("ascii"))
                 else:
                     message=str(message)
-                    message=message.split("=",1)
-                    if message[0]==self.username:
-                        print(self.mainCodeInTextEditor)
-                    else:
+                    message=message.split(" ",1)
+                    if message[0]!=self.username:
+                        message=message[1]
                         self.mainCodeInTextEditor=str(message)
+                        self.clientEditor.getScrolledText().delete("1.0",tk.END)
+                        self.clientEditor.getScrolledText().insert(tk.INSERT,self.mainCodeInTextEditor)
                         print(self.mainCodeInTextEditor)
             except:
-                print("An error occured! ")
+                print("\nAn error occured!...\n")
                 self.client.close()
                 break
 
