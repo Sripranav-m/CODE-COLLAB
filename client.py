@@ -11,14 +11,22 @@ class client:
         self.client = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
         self.client.connect((serverIP,serverPort))
 
-        self.receive_thread = threading.Thread(target=self.recieve)
-        self.receive_thread.start()
+        self.recieveCodeAndChat_thread = threading.Thread(target=self.recieveCodeAndChat)
+        self.recieveCodeAndChat_thread.start()
+
+        self.sendChat_thread = threading.Thread(target=self.sendChat)
+        self.sendChat_thread.start()
 
         self.clientEditor=codeEditor()
         self.clientEditor.getCodeVarInEditorObj().trace('w',self.realTimeCodeChanged)
         self.clientEditor.startCodeEditor()
 
-    def recieve(self):
+    def sendChat(self):
+        while True:
+            message = "@@USER@@CHAT@@"+str(self.username)+"> "+input("")
+            self.client.send(message.encode("ascii"))
+
+    def recieveCodeAndChat(self):
         while True:
             try:
                 message = self.client.recv(1024).decode("ascii")
@@ -27,11 +35,15 @@ class client:
                 else:
                     message=str(message)
                     message=message.split(" ",1)
-                    if message[0]!=self.username:
-                        message=message[1]
-                        self.mainCodeInTextEditor=str(message)
-                        self.clientEditor.deleteAllText()
-                        self.clientEditor.insertNewCode(self.mainCodeInTextEditor)
+                    if message[1][:14]=="@@USER@@CHAT@@":
+                        message=message[1][14:]
+                        print(message)
+                    else:
+                        if message[0]!=self.username:
+                            message=message[1]
+                            self.mainCodeInTextEditor=str(message)
+                            self.clientEditor.deleteAllText()
+                            self.clientEditor.insertNewCode(self.mainCodeInTextEditor)
             except:
                 print("\nAn error occured!...\n")
                 self.client.close()
