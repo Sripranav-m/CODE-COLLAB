@@ -4,19 +4,29 @@ from tkinter.scrolledtext import ScrolledText
 class codeEditor:
     def __init__(self):
         self.screen = tk.Tk(className='Collaborative Coding')
+        self.createCodeSection()
+        self.createChatDisplay()
+        self.createChatTypeandSendBtn()
+        self.screen.geometry("500x500")
+
+    def createCodeSection(self):
         self.Code_Var = tk.StringVar()
         self.codeScrolledText = ScrolledText(self.screen, height= 10, width = 60)
-        self.chatDisplay = ScrolledText(self.screen, height = 7, width = 60)
         self.codeScrolledText.grid(row=0,column=0)
+        self.codeScrolledText.bind('<KeyRelease>', self.get_stringvar)
+
+    def createChatDisplay(self):
+        self.chatDisplay = ScrolledText(self.screen, height = 7, width = 60)
         self.chatDisplay.grid(row=1,column=0, pady = 10)
+
+    def createChatTypeandSendBtn(self):
         buttonFram = tk.Frame(self.screen, relief=tk.RAISED, bd=2, height=1, width=60)
         self.chatSendBtn = tk.Button(buttonFram, text="Send")
         self.chatInput = tk.Text(buttonFram, height = 1, width = 30)
         self.chatInput.grid(row=0,column=0)
         self.chatSendBtn.grid(row=0, column=1, sticky="ew")
         buttonFram.grid(row=2, column=0, sticky="ns",)
-        self.codeScrolledText.bind('<KeyRelease>', self.get_stringvar)
-        self.screen.geometry("500x500")
+
 
     def get_stringvar(self,event):
         self.Code_Var.set(self.codeScrolledText.get("1.0", tk.END))
