@@ -1,9 +1,6 @@
 import socket
 import threading
 
-HOST_IP = "127.0.0.1"
-HOST_PORT = 11111
-
 class server:
     def __init__(self,serverIP,serverPort):
         self.server = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
@@ -13,7 +10,7 @@ class server:
         self.clients = []
         self.usernames=[]
 
-        print("Server Started...")
+        print("Server Started...\n")
         self.recieve()
 
     def broadcast(self,message):
@@ -23,14 +20,16 @@ class server:
     def handle(self,client):
         while True:
             try:
-                message=client.recv(1024)
-                self.broadcast(str(message))
+                message=client.recv(1024).decode()
+                message=str(message)
+                index = self.clients.index(client)
+                message=self.usernames[index]+"="+message
+                self.broadcast(message)
             except:
                 index = self.clients.index(client)
                 self.clients.remove(client)
                 client.close()
                 username=self.usernames[index]
-                self.broadcast((username+" left the chat!").encode('ascii'))
                 self.usernames.remove(username)
                 break
 
@@ -38,17 +37,18 @@ class server:
         while True:
             client,address = self.server.accept()
             print("Connected with "+str(address))
-            client.send("__USERNAME__".encode('ascii'))
+            client.send("____USER____NAME____".encode('ascii'))
             username=client.recv(1024).decode("ascii")
             self.usernames.append(username)
             self.clients.append(client)
             print("Username of the client is: "+str(username)+"\n\n\n")
-            self.broadcast(str(username)+" Joined...\n\n")
-            client.send("\nConnected to the server\n".encode("ascii"))
+            client.send("\n\nConnected to the server...\n\n".encode("ascii"))
 
             thread=threading.Thread(target=self.handle,args=(client,))
             thread.start()
 
 
 if __name__ == "__main__":
+    HOST_IP = "127.0.0.1"
+    HOST_PORT = 11111
     s=server(HOST_IP,HOST_PORT)
