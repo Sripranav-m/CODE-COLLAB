@@ -1,5 +1,6 @@
 import socket
 import threading
+import json
 
 class server:
     def __init__(self,serverIP,serverPort):
@@ -42,8 +43,12 @@ class server:
             self.usernames.append(username)
             self.clients.append(client)
             print("Username of the client is: "+str(username)+"\n\n\n")
-            client.send((str(username)+" Connected to the server...\n\n").encode("ascii"))
-
+            sendUsernames="@@USERNAMES@@"
+            for user in self.usernames:
+                sendUsernames+=user
+                sendUsernames+="%%@%%"
+            for cli in self.clients:
+                cli.send(sendUsernames.encode("ascii"))
             thread=threading.Thread(target=self.handle,args=(client,))
             thread.start()
 

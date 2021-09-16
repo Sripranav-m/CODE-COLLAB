@@ -1,6 +1,7 @@
 import socket
 import threading
 from editor import codeEditor
+import json
 
 class client:
     def __init__(self,serverIP,serverPort):
@@ -10,10 +11,11 @@ class client:
         self.client = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
         self.client.connect((serverIP,serverPort))
 
+        self.clientEditor=codeEditor()
+
         self.recieveCodeAndChat_thread = threading.Thread(target=self.recieveCodeAndChat)
         self.recieveCodeAndChat_thread.start()
 
-        self.clientEditor=codeEditor()
         self.clientEditor.getCodeVarInEditorObj().trace('w',self.realTimeCodeChanged)
         self.clientEditor.getSendChatButton()['command']=self.sendChatClicked
         self.clientEditor.startCodeEditor()
@@ -24,19 +26,30 @@ class client:
                 message = self.client.recv(1024).decode("ascii")
                 if message == "____USER____NAME____":
                     self.client.send(self.username.encode("ascii"))
+                    self.clientEditor.addUserName(self.username)
+                elif "@@USERNAMES@@" in message:
+                    #Update user names
+                    message=message[13:]
+                    usernames=message.split("%%@%%")
+                    usernames=usernames[:-1]
+                    print(usernames)
+                    self.clientEditor.enterNewUserNames(usernames)
                 else:
                     message=str(message)
                     message=message.split(" ",1)
                     if message[1][:14]=="@@USER@@CHAT@@":
+                        #update chat dispaly
                         message=message[1][14:]
                         self.clientEditor.insertNewChatInchatDisplay("\n"+message)
                     else:
                         if message[0]!=self.username:
+                            #update code
                             message=message[1]
                             self.mainCodeInTextEditor=str(message)
                             self.clientEditor.deleteAllTextInCode()
                             self.clientEditor.insertNewCodeInCode(self.mainCodeInTextEditor)
-            except:
+            except Exception as e:
+                print(e)
                 print("\nAn error occured!...\n")
                 self.client.close()
                 break
