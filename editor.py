@@ -18,6 +18,9 @@ class codeEditor:
     def createChatDisplay(self):
         self.chatDisplay = ScrolledText(self.screen, height = 7, width = 60)
         self.chatDisplay.grid(row=1,column=0, pady = 10)
+        #self.chatDisplay.bind("<Key>", lambda e: "break")
+        self.chatDisplay.insert(tk.INSERT,"CHAT SPACE")
+        self.chatDisplay.configure(state="disabled")
 
     def createChatTypeandSendBtn(self):
         buttonFram = tk.Frame(self.screen, relief=tk.RAISED, bd=2, height=1, width=60)
@@ -39,7 +42,9 @@ class codeEditor:
         self.codeScrolledText.delete("1.0",tk.END)
 
     def insertNewChatInchatDisplay(self,newChat):
+        self.chatDisplay.configure(state="normal")
         self.chatDisplay.insert(tk.INSERT,newChat)
+        self.chatDisplay.configure(state="disabled")
 
     def insertNewCodeInCode(self,newCode):
         self.codeScrolledText.insert(tk.INSERT,newCode)
@@ -58,3 +63,4 @@ class codeEditor:
 
 if __name__ == "__main__":
     c = codeEditor()
+    c.startCodeEditor()
